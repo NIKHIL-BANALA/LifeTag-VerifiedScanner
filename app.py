@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 from itsdangerous import URLSafeSerializer
-
+import os
 # Initialize the Flask application
 app = Flask(__name__)
-app.secret_key = "1411"
-
 
 @app.route('/')
 def index():
@@ -17,7 +15,7 @@ def decrypt_private():
         if not encrypted_private:
             return jsonify({"error": "No encrypted data provided"}), 400
         
-        s = URLSafeSerializer(app.secret_key)
+        s = URLSafeSerializer(os.environ.get('SECRET_KEY'))
         private_data = s.loads(encrypted_private)
         return jsonify({"private": private_data})
     except Exception as e:
